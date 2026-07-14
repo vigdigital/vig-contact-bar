@@ -1,49 +1,48 @@
-# VIG Contact Bar
+# 📞 VIG Contact Bar
 
-A floating multi-channel contact bar for WordPress by [VIG Digital](https://vigdigital.com) — Tawk.to live chat, WhatsApp, and a contact form, responsive on desktop & mobile.
+**Thanh liên hệ nổi giúp khách kết nối với bạn chỉ bằng một chạm — cài xong là chạy, không cần biết code.**
 
-> Thanh liên hệ nổi: Chat Tawk.to, WhatsApp và Contact Form (shortcode). Responsive Desktop & Mobile.
+Bạn có đang mất khách chỉ vì họ không tìm thấy nút liên hệ? VIG Contact Bar gắn một thanh liên hệ gọn gàng, luôn hiện ở góc màn hình để khách **chat, nhắn tin hoặc gửi form** cho bạn ngay lập tức — trên cả máy tính lẫn điện thoại.
 
-## Features
+## Vì sao nên dùng
 
-- **Floating contact bar** with collapse/expand and optional hide-text (per desktop/mobile).
-- **Tawk.to integration** — hides Tawk's default bubble and drives it from the bar's own button.
-- **WhatsApp** click-to-chat link.
-- **Contact form** via shortcode (drop any form builder's shortcode in settings).
-- **Multilingual** — channel titles registered with Polylang string translation.
-- **VIG Toolkit** shared admin menu (Dashboard + Guideline docs).
+- 💬 **Khách liên hệ ngay** — không phải cuộn tìm số điện thoại.
+- 📱 **Đẹp sẵn trên điện thoại** — tự co giãn, không vỡ giao diện.
+- 🇻🇳 **Tiếng Việt sẵn** — hỗ trợ cả website đa ngôn ngữ (Polylang).
+- ⚡ **Nhẹ nhàng** — không làm chậm website.
 
-Configure under **WP Admin → VIG Toolkit → Contact Bar**.
+## Có sẵn những gì
 
-## Requirements
+- Chat trực tiếp qua **Tawk.to** (miễn phí)
+- Nút nhắn **WhatsApp**
+- **Form liên hệ** (dán shortcode form bạn đang dùng)
+- Thu gọn / mở rộng, ẩn chữ tuỳ ý cho gọn màn hình
 
-- WordPress 6.0+
-- PHP 7.4+
-- Optional: Polylang (for multilingual titles), a Tawk.to account (for live chat)
+## Cài đặt trong 2 phút
 
-## Installation
+1. Tải file cài đặt mới nhất ở trang [Releases](../../releases).
+2. Vào **WordPress → Plugins → Cài mới → Tải plugin lên**, chọn file vừa tải → **Cài đặt** → **Kích hoạt**.
+3. Vào **VIG Toolkit → Contact Bar**, điền số điện thoại / link chat của bạn → bấm **Lưu**.
 
-1. Download the latest `vig-contact-bar.zip` from [Releases](https://github.com/vigdigital/vig-contact-bar/releases).
-2. WP Admin → **Plugins → Add New → Upload Plugin** → choose the zip → **Install** → **Activate**.
+Xong! Thanh liên hệ hiện ngay trên website. **Không cần đụng tới một dòng code nào.**
 
-> Do **not** use GitHub's green "Download ZIP" button — its folder name is wrong for WordPress. Always use the release asset above (or let auto-update handle it).
+## Cập nhật
 
-## Updates
+Khi có phiên bản mới, WordPress sẽ tự báo — bạn chỉ cần bấm **Cập nhật** như mọi plugin khác. Không phải tải lại thủ công.
 
-Self-update is powered by [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker) reading this repo's GitHub Releases. When a new release is tagged, WordPress shows a normal **Update** prompt under Plugins.
+## Cần hỗ trợ?
 
-> While this repo is private, sites need to be authorised to receive updates. Deployment/auth is handled internally — see VIG's internal ops notes.
+VIG Contact Bar được phát triển & đồng hành bởi **[VIG Digital](https://vigdigital.com)**. Gặp vướng mắc hay muốn thêm tính năng? Cứ nhắn cho tụi mình một tiếng. 🙌
 
-## Releasing (maintainers)
+---
 
-Tagging a version automatically builds a clean zip and attaches it to the release — see [`.github/workflows/build-release.yml`](.github/workflows/build-release.yml).
+<details>
+<summary><b>Dành cho developer / maintainer</b></summary>
 
-```bash
-# bump Version: in vig-contact-bar.php, commit, then:
-git tag v1.1.0
-git push origin v1.1.0
-```
-
-## License
+- **Yêu cầu:** WordPress 6.0+, PHP 7.4+. Tuỳ chọn: Polylang (đa ngôn ngữ), tài khoản Tawk.to (live chat).
+- **Tự cập nhật:** dùng [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker) đọc GitHub Releases. Repo đang private → site cần được cấp quyền để nhận update (xử lý theo VIG internal ops notes, không đặt token trong repo).
+- **Phát hành bản mới:** bump `Version:` trong `vig-contact-bar.php` → commit → `git tag v1.1.0 && git push origin v1.1.0`. GitHub Action (`.github/workflows/build-release.yml`) tự build zip sạch và đính vào Release.
 
 GPL-2.0-or-later © VIG Digital
+
+</details>
