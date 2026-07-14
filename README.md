@@ -32,14 +32,7 @@ Configure under **WP Admin → VIG Toolkit → Contact Bar**.
 
 Self-update is powered by [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker) reading this repo's GitHub Releases. When a new release is tagged, WordPress shows a normal **Update** prompt under Plugins.
 
-Because this repo is **private**, each site must authorise access via `wp-config.php`:
-
-```php
-// ⚠️ Quote the token string. Give the token only `repo` scope.
-define( 'VIG_GH_TOKEN', 'ghp_xxxxxxxxxxxxxxxxxxxx' );
-```
-
-(Public repos / a VIG update server do not need this.)
+> While this repo is private, sites need to be authorised to receive updates. Deployment/auth is handled internally — see VIG's internal ops notes.
 
 ## Releasing (maintainers)
 
