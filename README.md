@@ -39,6 +39,8 @@ VIG Contact Bar được phát triển & đồng hành bởi **[VIG Digital](htt
 <details>
 <summary><b>Dành cho developer / maintainer</b></summary>
 
+> 📚 *Về sau, tài liệu kỹ thuật đầy đủ sẽ chuyển lên **vigdigital.com** — khi đó mục này rút gọn thành một liên kết.*
+
 - **Yêu cầu:** WordPress 6.0+, PHP 7.4+. Tuỳ chọn: Polylang (đa ngôn ngữ), tài khoản Tawk.to (live chat).
 - **Tự cập nhật:** dùng [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker) đọc GitHub Releases. Repo đang private → site cần được cấp quyền để nhận update (xử lý theo VIG internal ops notes, không đặt token trong repo).
 - **Phát hành bản mới:** bump `Version:` trong `vig-contact-bar.php` → commit → `git tag v1.1.0 && git push origin v1.1.0`. GitHub Action (`.github/workflows/build-release.yml`) tự build zip sạch và đính vào Release.
