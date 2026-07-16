@@ -13,11 +13,10 @@ Bạn có đang mất khách chỉ vì họ không tìm thấy nút liên hệ? 
 
 ## Có sẵn những gì
 
-- **2 kiểu giao diện (Preset):** *Hotline* (thanh thu gọn) hoặc *Leon Dio (FAB)* — nút tròn nổi bung ra các kênh, 3 tông màu.
-- Chat trực tiếp qua **Tawk.to** (miễn phí)
-- Nút nhắn **WhatsApp**, **Zalo**, **Messenger**, **gọi điện** (preset FAB)
-- **Form liên hệ** (dán shortcode form bạn đang dùng)
-- Thu gọn / mở rộng, ẩn chữ tuỳ ý cho gọn màn hình
+- **2 kiểu hiển thị (Preset):** *Bar* (thanh pill dọc có nhãn) hoặc *FAB* (nút tròn nổi bung ra các kênh, 3 tông màu).
+- **Đa kênh:** gọi điện, **WhatsApp**, **Zalo**, **Messenger**, chat **Tawk.to**, **Form liên hệ** (shortcode, mở popup).
+- **Cấu hình theo tab** rõ ràng: Preset · Content (bật/điền từng kênh, đặt thứ tự) · Style (màu, vị trí, ẩn chữ).
+- Đổi màu thương hiệu, chọn vị trí (dưới phải/trái/giữa), ẩn chữ theo thiết bị.
 
 ## Cài đặt trong 2 phút
 
