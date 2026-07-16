@@ -3,8 +3,8 @@
 /**
  * Plugin Name: VIG Contact Bar
  * Plugin URI: https://vigdigital.com
- * Description: Thanh liên hệ nổi (Contact Bar): Chat Tawk.to, WhatsApp và Contact Form (shortcode). Responsive Desktop & Mobile.
- * Version: 1.0.0
+ * Description: Thanh liên hệ nổi (Contact Bar): nhiều preset (Hotline, Leon Dio FAB) — Chat Tawk.to, WhatsApp, Zalo, Messenger, Phone, Contact Form. Responsive Desktop & Mobile.
+ * Version: 1.1.0
  * Author: VIG Digital
  * Author URI: https://vigdigital.com
  * License: GPL-2.0-or-later
@@ -34,6 +34,9 @@ require_once __DIR__ . '/includes/vig-admin-menu.php';
 require_once __DIR__ . '/includes/vig-update-checker.php';
 vig_setup_updates( __FILE__, 'vig-contact-bar' );
 
+// Preset "Leon Dio (FAB)"
+require_once __DIR__ . '/includes/preset-fab.php';
+
 // Đăng ký chuỗi tiêu đề cho Polylang (đa ngôn ngữ). Guard: không có Polylang thì bỏ qua.
 add_action('init', 'vig_contact_bar_register_strings');
 function vig_contact_bar_register_strings() {
@@ -44,6 +47,9 @@ function vig_contact_bar_register_strings() {
     pll_register_string('vig_cb_tawkto_title',   get_option('vig_contact_bar_tawkto_title',   'Chat withTawk.to'), $g);
     pll_register_string('vig_cb_whatsapp_title', get_option('vig_contact_bar_whatsapp_title', 'WhatsApp'),         $g);
     pll_register_string('vig_cb_contact_title',  get_option('vig_contact_bar_contact_title',  'Contact form'),     $g);
+    pll_register_string('vig_cb_phone_label',     get_option('vig_contact_bar_phone_label',     'Gọi ngay'),   $g);
+    pll_register_string('vig_cb_zalo_label',      get_option('vig_contact_bar_zalo_label',      'Zalo'),       $g);
+    pll_register_string('vig_cb_messenger_label', get_option('vig_contact_bar_messenger_label', 'Messenger'),  $g);
 }
 // Trả bản dịch chuỗi theo ngôn ngữ hiện tại nếu có Polylang, không thì trả nguyên.
 function vig_contact_bar_pll( $s ) {
@@ -96,6 +102,18 @@ function vig_contact_bar_settings_page()
         update_option('vig_contact_bar_show_text_desktop', isset($_POST['vig_contact_bar_show_text_desktop']) ? '1' : '0');
         update_option('vig_contact_bar_show_text_mobile', isset($_POST['vig_contact_bar_show_text_mobile']) ? '1' : '0');
 
+        // Preset + kênh cho FAB
+        $preset_in = sanitize_text_field($_POST['vig_contact_bar_preset'] ?? 'hotline');
+        update_option('vig_contact_bar_preset', in_array($preset_in, array('hotline', 'fab-leondio'), true) ? $preset_in : 'hotline');
+        update_option('vig_contact_bar_fab_style', sanitize_text_field($_POST['vig_contact_bar_fab_style'] ?? 'light'));
+        update_option('vig_contact_bar_fab_color', sanitize_hex_color($_POST['vig_contact_bar_fab_color'] ?? '') ?: '#c5a059');
+        update_option('vig_contact_bar_phone', sanitize_text_field($_POST['vig_contact_bar_phone'] ?? ''));
+        update_option('vig_contact_bar_phone_label', sanitize_text_field($_POST['vig_contact_bar_phone_label'] ?? ''));
+        update_option('vig_contact_bar_zalo', sanitize_text_field($_POST['vig_contact_bar_zalo'] ?? ''));
+        update_option('vig_contact_bar_zalo_label', sanitize_text_field($_POST['vig_contact_bar_zalo_label'] ?? ''));
+        update_option('vig_contact_bar_messenger', sanitize_text_field($_POST['vig_contact_bar_messenger'] ?? ''));
+        update_option('vig_contact_bar_messenger_label', sanitize_text_field($_POST['vig_contact_bar_messenger_label'] ?? ''));
+
         echo '<div class="updated"><p>Settings saved successfully!</p></div>';
     }
 
@@ -120,12 +138,72 @@ function vig_contact_bar_settings_page()
     $show_text_desktop = get_option('vig_contact_bar_show_text_desktop', '1');
     $show_text_mobile  = get_option('vig_contact_bar_show_text_mobile', '1');
 
+    $preset          = get_option('vig_contact_bar_preset', 'hotline');
+    $fab_style       = get_option('vig_contact_bar_fab_style', 'light');
+    $fab_color       = get_option('vig_contact_bar_fab_color', '#c5a059');
+    $phone           = get_option('vig_contact_bar_phone', '');
+    $phone_label     = get_option('vig_contact_bar_phone_label', 'Gọi ngay');
+    $zalo            = get_option('vig_contact_bar_zalo', '');
+    $zalo_label      = get_option('vig_contact_bar_zalo_label', 'Zalo');
+    $messenger       = get_option('vig_contact_bar_messenger', '');
+    $messenger_label = get_option('vig_contact_bar_messenger_label', 'Messenger');
+
 ?>
     <div class="wrap">
         <h1>VIG Contact Bar Settings</h1>
         <form method="post" action="">
             <?php wp_nonce_field('vig_contact_bar_save_options'); ?>
             <table class="form-table">
+                <!-- Preset selector -->
+                <tr valign="top">
+                    <th scope="row">Giao diện (Preset)</th>
+                    <td>
+                        <select name="vig_contact_bar_preset">
+                            <option value="hotline" <?php selected($preset, 'hotline'); ?>>Hotline (thanh thu gọn — mặc định)</option>
+                            <option value="fab-leondio" <?php selected($preset, 'fab-leondio'); ?>>Leon Dio (FAB — nút tròn bung kênh)</option>
+                        </select>
+                        <p class="description">Chọn kiểu hiển thị của thanh liên hệ ở front-end.</p>
+                    </td>
+                </tr>
+
+                <!-- FAB (Leon Dio) settings -->
+                <tr><td colspan="2"><hr /><h2>Preset "Leon Dio (FAB)" — kênh &amp; màu</h2>
+                    <p class="description">Áp dụng khi chọn preset "Leon Dio (FAB)". WhatsApp &amp; Contact dùng chung ô cấu hình bên dưới.</p></td></tr>
+                <tr valign="top">
+                    <th scope="row">Kiểu màu</th>
+                    <td>
+                        <label style="margin-right:16px"><input type="radio" name="vig_contact_bar_fab_style" value="light" <?php checked($fab_style, 'light'); ?>> Nền sáng, icon màu</label>
+                        <label style="margin-right:16px"><input type="radio" name="vig_contact_bar_fab_style" value="colored" <?php checked($fab_style, 'colored'); ?>> Nền màu, icon trắng</label>
+                        <label><input type="radio" name="vig_contact_bar_fab_style" value="bordered" <?php checked($fab_style, 'bordered'); ?>> Viền màu thương hiệu</label>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">Màu thương hiệu</th>
+                    <td><input type="color" name="vig_contact_bar_fab_color" value="<?php echo esc_attr($fab_color); ?>"> <span class="description">Nút chính + hiệu ứng. Mặc định gold Leon Dio.</span></td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">Điện thoại (gọi)</th>
+                    <td>
+                        <input type="text" name="vig_contact_bar_phone" value="<?php echo esc_attr($phone); ?>" class="regular-text" placeholder="0901234567">
+                        <p class="description">Nhãn: <input type="text" name="vig_contact_bar_phone_label" value="<?php echo esc_attr($phone_label); ?>"></p>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">Zalo</th>
+                    <td>
+                        <input type="text" name="vig_contact_bar_zalo" value="<?php echo esc_attr($zalo); ?>" class="regular-text" placeholder="Số điện thoại hoặc link zalo.me">
+                        <p class="description">Nhãn: <input type="text" name="vig_contact_bar_zalo_label" value="<?php echo esc_attr($zalo_label); ?>"></p>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">Messenger</th>
+                    <td>
+                        <input type="text" name="vig_contact_bar_messenger" value="<?php echo esc_attr($messenger); ?>" class="regular-text" placeholder="username hoặc link m.me">
+                        <p class="description">Nhãn: <input type="text" name="vig_contact_bar_messenger_label" value="<?php echo esc_attr($messenger_label); ?>"></p>
+                    </td>
+                </tr>
+                <tr><td colspan="2"><hr /><h2>Cấu hình chung (Hotline &amp; các kênh dùng chung)</h2></td></tr>
+
                 <!-- Tawk.to settings -->
                 <tr valign="top">
                     <th scope="row">Tawk.to Embed Code</th>
@@ -321,6 +399,12 @@ function vig_contact_bar_inject_tawkto()
 add_action('wp_footer', 'vig_contact_bar_render_markup');
 function vig_contact_bar_render_markup()
 {
+    // Dispatch theo preset.
+    if (get_option('vig_contact_bar_preset', 'hotline') === 'fab-leondio') {
+        vig_contact_bar_render_fab();
+        return;
+    }
+
     $whatsapp_num = get_option('vig_contact_bar_whatsapp_number', '');
     $contact_shortcode = get_option('vig_contact_bar_contact_shortcode', '');
     $new_tab_enabled = get_option('vig_contact_bar_new_tab', '1');
