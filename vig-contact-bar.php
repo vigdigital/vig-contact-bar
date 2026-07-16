@@ -4,7 +4,7 @@
  * Plugin Name: VIG Contact Bar
  * Plugin URI: https://vigdigital.com
  * Description: Thanh liên hệ nổi (Contact Bar): nhiều preset (Hotline, Leon Dio FAB) — Chat Tawk.to, WhatsApp, Zalo, Messenger, Phone, Contact Form. Responsive Desktop & Mobile.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: VIG Digital
  * Author URI: https://vigdigital.com
  * License: GPL-2.0-or-later
