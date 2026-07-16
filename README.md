@@ -13,8 +13,9 @@ Bạn có đang mất khách chỉ vì họ không tìm thấy nút liên hệ? 
 
 ## Có sẵn những gì
 
+- **2 kiểu giao diện (Preset):** *Hotline* (thanh thu gọn) hoặc *Leon Dio (FAB)* — nút tròn nổi bung ra các kênh, 3 tông màu.
 - Chat trực tiếp qua **Tawk.to** (miễn phí)
-- Nút nhắn **WhatsApp**
+- Nút nhắn **WhatsApp**, **Zalo**, **Messenger**, **gọi điện** (preset FAB)
 - **Form liên hệ** (dán shortcode form bạn đang dùng)
 - Thu gọn / mở rộng, ẩn chữ tuỳ ý cho gọn màn hình
 
