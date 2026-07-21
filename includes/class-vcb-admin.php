@@ -35,6 +35,7 @@ class VCB_Admin {
 		update_option( 'vig_cb_new_tab', isset( $p['vig_cb_new_tab'] ) ? '1' : '0' );
 		update_option( 'vig_cb_tawkto_hide', isset( $p['vig_cb_tawkto_hide'] ) ? '1' : '0' );
 		update_option( 'vig_cb_tawkto_autoopen', isset( $p['vig_cb_tawkto_autoopen'] ) ? '1' : '0' );
+		update_option( 'vig_cb_tawkto_chat_bottom', max( 0, min( 2000, (int) ( $p['vig_cb_tawkto_chat_bottom'] ?? 0 ) ) ) );
 		update_option( 'vig_cb_always_open', isset( $p['vig_cb_always_open'] ) ? '1' : '0' );
 
 		// Content — mỗi kênh
@@ -131,6 +132,8 @@ class VCB_Admin {
 										<p style="margin:6px 0 0;"><label><input type="checkbox" name="vig_cb_tawkto_hide" value="1" <?php checked( get_option( 'vig_cb_tawkto_hide', '1' ), '1' ); ?>> <?php echo esc_html( vcb_t( 'Ẩn bong bóng chat mặc định của Tawk.to' ) ); ?></label></p>
 										<p style="margin:4px 0 0;"><label><input type="checkbox" name="vig_cb_tawkto_autoopen" value="1" <?php checked( get_option( 'vig_cb_tawkto_autoopen', '0' ), '1' ); ?>> <strong><?php echo esc_html( vcb_t( 'Tự mở khung chat' ) ); ?></strong> <?php echo esc_html( vcb_t( 'khi khách vào (1 lần mỗi phiên)' ) ); ?></label>
 										<span class="description"><?php echo esc_html( vcb_t( 'Chuyển trang trong cùng phiên không bung lại; khách tự đóng thì thôi.' ) ); ?></span></p>
+										<p style="margin:4px 0 0;"><label><?php echo esc_html( vcb_t( 'Hạ khung chat sát đáy (px)' ) ); ?>: <input type="number" name="vig_cb_tawkto_chat_bottom" value="<?php echo esc_attr( (int) get_option( 'vig_cb_tawkto_chat_bottom', '0' ) ); ?>" min="0" max="2000" style="width:80px;"></label>
+										<span class="description"><?php echo esc_html( vcb_t( '0 = giữ nguyên vị trí mặc định của Tawk.to. Ví dụ 24 = khung chat cách đáy màn hình 24px.' ) ); ?></span></p>
 									<?php endif; ?>
 								</td>
 								<td><input type="text" name="vig_cb_<?php echo esc_attr( $k ); ?>_label" value="<?php echo esc_attr( $label ); ?>" placeholder="<?php echo esc_attr( VCB_Channels::default_label( $k, $def ) ); ?>" style="width:100%;"></td>
