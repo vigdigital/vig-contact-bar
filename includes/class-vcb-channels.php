@@ -23,13 +23,45 @@ class VCB_Channels {
 	/** @return array<string,array> registry định nghĩa từng kênh. */
 	public static function registry(): array {
 		return array(
-			'tawkto'    => array( 'label' => 'Chat trực tuyến', 'color' => '#1553a9', 'behavior' => 'tawk',    'value_type' => 'code', 'hint' => 'Dán mã nhúng Tawk.to' ),
-			'phone'     => array( 'label' => 'Gọi điện',        'color' => '#22C55E', 'behavior' => 'link',    'value_type' => 'text', 'hint' => 'Số điện thoại' ),
-			'whatsapp'  => array( 'label' => 'WhatsApp',        'color' => '#25D366', 'behavior' => 'link',    'value_type' => 'text', 'hint' => 'Số quốc tế, vd 84901234567' ),
-			'zalo'      => array( 'label' => 'Zalo',            'color' => '#0068FF', 'behavior' => 'link',    'value_type' => 'text', 'hint' => 'Số điện thoại hoặc link zalo.me' ),
-			'messenger' => array( 'label' => 'Messenger',       'color' => '#A855F7', 'behavior' => 'link',    'value_type' => 'text', 'hint' => 'Username hoặc link m.me' ),
-			'contact'   => array( 'label' => 'Liên hệ',         'color' => '#0D9488', 'behavior' => 'contact', 'value_type' => 'text', 'hint' => 'URL trang liên hệ (hoặc dùng form modal bên dưới)' ),
+			'tawkto'    => array( 'label' => 'Chat trực tuyến', 'label_en' => 'Live chat', 'color' => '#1553a9', 'behavior' => 'tawk',    'value_type' => 'code', 'hint' => 'Dán mã nhúng Tawk.to',                              'hint_en' => 'Paste your Tawk.to embed code' ),
+			'phone'     => array( 'label' => 'Gọi điện',        'label_en' => 'Call',      'color' => '#22C55E', 'behavior' => 'link',    'value_type' => 'text', 'hint' => 'Số điện thoại',                                     'hint_en' => 'Phone number' ),
+			'whatsapp'  => array( 'label' => 'WhatsApp',        'label_en' => 'WhatsApp',  'color' => '#25D366', 'behavior' => 'link',    'value_type' => 'text', 'hint' => 'Số quốc tế, vd 84901234567',                        'hint_en' => 'International number, e.g. 84901234567' ),
+			'zalo'      => array( 'label' => 'Zalo',            'label_en' => 'Zalo',      'color' => '#0068FF', 'behavior' => 'link',    'value_type' => 'text', 'hint' => 'Số điện thoại hoặc link zalo.me',                   'hint_en' => 'Phone number or zalo.me link' ),
+			'messenger' => array( 'label' => 'Messenger',       'label_en' => 'Messenger', 'color' => '#A855F7', 'behavior' => 'link',    'value_type' => 'text', 'hint' => 'Username hoặc link m.me',                           'hint_en' => 'Username or m.me link' ),
+			'contact'   => array( 'label' => 'Liên hệ',         'label_en' => 'Contact',   'color' => '#0D9488', 'behavior' => 'contact', 'value_type' => 'text', 'hint' => 'URL trang liên hệ (hoặc dùng form modal bên dưới)', 'hint_en' => 'Contact page URL (or use the modal form below)' ),
 		);
+	}
+
+	/** true nếu ngôn ngữ site là tiếng Anh (theo locale WP / Polylang). */
+	public static function is_en(): bool {
+		$loc = function_exists( 'determine_locale' ) ? determine_locale() : get_locale();
+		return 0 === strpos( (string) $loc, 'en' );
+	}
+
+	/**
+	 * Nhãn MẶC ĐỊNH của kênh theo ngôn ngữ site (Anh → label_en, còn lại → label tiếng Việt).
+	 * Dùng khi admin KHÔNG tự nhập nhãn riêng.
+	 */
+	public static function default_label( string $key, array $def = null ): string {
+		if ( null === $def ) {
+			$reg = self::registry();
+			$def = $reg[ $key ] ?? array();
+		}
+		return ( self::is_en() && ! empty( $def['label_en'] ) ) ? $def['label_en'] : ( $def['label'] ?? '' );
+	}
+
+	/** Nhãn nút trigger "Liên hệ"/"Contact" theo ngôn ngữ site. */
+	public static function trigger_label(): string {
+		return self::is_en() ? 'Contact' : 'Liên hệ';
+	}
+
+	/** Gợi ý (hint) của kênh theo ngôn ngữ admin. */
+	public static function default_hint( string $key, array $def = null ): string {
+		if ( null === $def ) {
+			$reg = self::registry();
+			$def = $reg[ $key ] ?? array();
+		}
+		return ( self::is_en() && ! empty( $def['hint_en'] ) ) ? $def['hint_en'] : ( $def['hint'] ?? '' );
 	}
 
 	public static function opt( string $key, string $field, $default = '' ) {
@@ -88,7 +120,7 @@ class VCB_Channels {
 
 			$label = trim( (string) self::opt( $k, 'label', '' ) );
 			if ( '' === $label ) {
-				$label = $def['label'];
+				$label = self::default_label( $k, $def );
 			}
 
 			$out[] = array(

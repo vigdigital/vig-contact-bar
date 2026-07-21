@@ -29,6 +29,7 @@ function vig_cb_style(): array {
 		'fab_style'    => in_array( get_option( 'vig_cb_fab_style', 'light' ), array( 'light', 'colored', 'bordered' ), true ) ? get_option( 'vig_cb_fab_style', 'light' ) : 'light',
 		'text_desktop' => get_option( 'vig_cb_show_text_desktop', '1' ) === '1',
 		'text_mobile'  => get_option( 'vig_cb_show_text_mobile', '1' ) === '1',
+		'always_open'  => get_option( 'vig_cb_always_open', '0' ) === '1',
 	);
 }
 
@@ -112,7 +113,8 @@ function vig_cb_inject_tawk(): void {
 	if ( '' === trim( $code ) ) {
 		return;
 	}
-	$hide = get_option( 'vig_cb_tawkto_hide', '1' ) === '1';
+	$hide     = get_option( 'vig_cb_tawkto_hide', '1' ) === '1';
+	$autoopen = get_option( 'vig_cb_tawkto_autoopen', '0' ) === '1';
 	?>
 	<script type="text/javascript">
 		var Tawk_API = Tawk_API || {};
@@ -120,8 +122,10 @@ function vig_cb_inject_tawk(): void {
 			desktop: { position: 'br', xOffset: 90, yOffset: 20 },
 			mobile:  { position: 'br', xOffset: 0,  yOffset: 0 }
 		}};
-	<?php if ( $hide ) : ?>
 		(function(){
+			var HIDE = <?php echo $hide ? 'true' : 'false'; ?>;
+			var AUTOOPEN = <?php echo $autoopen ? 'true' : 'false'; ?>;
+
 			function hideBubble(){
 				var f = document.querySelectorAll('iframe');
 				for(var i=0;i<f.length;i++){
@@ -131,14 +135,32 @@ function vig_cb_inject_tawk(): void {
 					}
 				}
 			}
-			Tawk_API.onLoad = function(){ if(Tawk_API.hideWidget) Tawk_API.hideWidget(); hideBubble(); };
-			Tawk_API.onChatMaximized = function(){ setTimeout(hideBubble,300); };
-			document.addEventListener('DOMContentLoaded', function(){
-				hideBubble();
-				new MutationObserver(hideBubble).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
-			});
+			// Tự mở 1 LẦN mỗi phiên: chuyển trang trong cùng phiên không bung lại; khách tự đóng thì tôn trọng.
+			function wantAutoOpen(){
+				if(!AUTOOPEN) return false;
+				try {
+					if(sessionStorage.getItem('vcb_chat_opened')) return false;
+					sessionStorage.setItem('vcb_chat_opened','1');
+				} catch(e){}
+				return true;
+			}
+
+			Tawk_API.onLoad = function(){
+				if(wantAutoOpen()){
+					if(Tawk_API.maximize) Tawk_API.maximize();
+					return;
+				}
+				if(HIDE){ if(Tawk_API.hideWidget) Tawk_API.hideWidget(); hideBubble(); }
+			};
+
+			if(HIDE){
+				Tawk_API.onChatMaximized = function(){ setTimeout(hideBubble,300); };
+				document.addEventListener('DOMContentLoaded', function(){
+					hideBubble();
+					new MutationObserver(hideBubble).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
+				});
+			}
 		})();
-	<?php endif; ?>
 	</script>
 	<style>.tawk-min-container{display:none!important;}</style>
 	<?php

@@ -10,14 +10,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function vig_cb_render_fab( array $channels, array $style ): void {
 	$pos        = $style['position'];
+	$always     = ! empty( $style['always_open'] );
 	$label_side = ( 'bl' === $pos ) ? 'left:60px' : 'right:60px';
+	// always → thêm class hiện nút thẳng (vcb-fab-static) + vcb-open để tái dùng CSS bung.
+	$wrap_class = 'vcb-fab vcb-fab-' . $style['fab_style'] . ( $always ? ' vcb-fab-static vcb-open' : '' );
 	?>
-	<div id="vcb-fab" class="vcb-fab vcb-fab-<?php echo esc_attr( $style['fab_style'] ); ?>"
+	<div id="vcb-fab" class="<?php echo esc_attr( $wrap_class ); ?>"
 	     style="--vcb-brand:<?php echo esc_attr( $style['color'] ); ?>;<?php echo esc_attr( vig_cb_position_css( $pos ) ); ?>">
-		<button class="vcb-fab-btn vcb-fab-trigger" id="vcbFabTrigger" aria-label="Liên hệ">
+		<?php if ( ! $always ) : ?>
+		<button class="vcb-fab-btn vcb-fab-trigger" id="vcbFabTrigger" aria-label="<?php echo esc_attr( VCB_Channels::trigger_label() ); ?>">
 			<svg class="vcb-ic-main" viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.6.38 3.11 1.04 4.45L2 22l5.55-1.04A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
 			<svg class="vcb-ic-close" viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
 		</button>
+		<?php endif; ?>
 		<?php
 		$d = 0.05;
 		foreach ( array_reverse( $channels ) as $ch ) :
@@ -54,7 +59,10 @@ function vig_cb_render_fab( array $channels, array $style ): void {
 		.vcb-fab-trigger::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--vcb-brand);opacity:.3;z-index:-1;animation:vcbPulse 2s infinite}
 		#vcb-fab.vcb-open .vcb-fab-trigger::before{display:none}
 		@keyframes vcbPulse{0%{transform:scale(1);opacity:.3}100%{transform:scale(1.7);opacity:0}}
+		/* always-open: nút hiện ngay, không delay staggered */
+		.vcb-fab-static .vcb-fab-item{transition-delay:0s!important}
 	</style>
+	<?php if ( ! $always ) : ?>
 	<script>
 		(function(){
 			var w=document.getElementById('vcb-fab'),t=document.getElementById('vcbFabTrigger');
@@ -63,5 +71,6 @@ function vig_cb_render_fab( array $channels, array $style ): void {
 			document.addEventListener('click',function(e){if(!w.contains(e.target))w.classList.remove('vcb-open');});
 		})();
 	</script>
+	<?php endif; ?>
 	<?php
 }

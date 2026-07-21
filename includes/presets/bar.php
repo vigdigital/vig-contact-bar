@@ -1,6 +1,7 @@
 <?php
 /**
  * Preset Bar — thanh pill dọc (icon + nhãn), có nút thu gọn. Nhãn ẩn được theo thiết bị.
+ * always_open = bung sẵn, KHÔNG render nút trigger (không cần bấm).
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -9,13 +10,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function vig_cb_render_bar( array $channels, array $style ): void {
 	$pos     = $style['position'];
+	$always  = ! empty( $style['always_open'] );
 	$classes = 'vcb-bar vcb-pos-' . $pos . ' vcb-open';
+	if ( $always ) {
+		$classes .= ' vcb-always';   // luôn bung, ẩn nút trigger
+	}
 	if ( ! $style['text_desktop'] ) {
 		$classes .= ' vcb-hide-text-desktop';
 	}
 	if ( ! $style['text_mobile'] ) {
 		$classes .= ' vcb-hide-text-mobile';
 	}
+	$trigger = VCB_Channels::trigger_label();
 	?>
 	<div id="vcb-bar" class="<?php echo esc_attr( $classes ); ?>" style="--vcb-brand:<?php echo esc_attr( $style['color'] ); ?>;<?php echo esc_attr( vig_cb_position_css( $pos ) ); ?>">
 		<div class="vcb-bar-list">
@@ -27,10 +33,12 @@ function vig_cb_render_bar( array $channels, array $style ): void {
 				</a>
 			<?php endforeach; ?>
 		</div>
-		<button class="vcb-bar-toggle" id="vcbBarToggle" aria-label="Liên hệ">
-			<svg class="vcb-bar-toggle-ic" viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.6.38 3.11 1.04 4.45L2 22l5.55-1.04A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
-			<span class="vcb-bar-toggle-tx"><?php esc_html_e( 'Liên hệ', 'vig-contact-bar' ); ?></span>
-		</button>
+		<?php if ( ! $always ) : ?>
+			<button class="vcb-bar-toggle" id="vcbBarToggle" aria-label="<?php echo esc_attr( $trigger ); ?>">
+				<svg class="vcb-bar-toggle-ic" viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.6.38 3.11 1.04 4.45L2 22l5.55-1.04A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
+				<span class="vcb-bar-toggle-tx"><?php echo esc_html( $trigger ); ?></span>
+			</button>
+		<?php endif; ?>
 	</div>
 	<style>
 		#vcb-bar{position:fixed;z-index:98;display:flex;flex-direction:column;gap:10px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
@@ -48,6 +56,7 @@ function vig_cb_render_bar( array $channels, array $style ): void {
 		@media (min-width:768px){#vcb-bar.vcb-hide-text-desktop .vcb-bar-tx{display:none}#vcb-bar.vcb-hide-text-desktop .vcb-bar-item{padding:8px}}
 		@media (max-width:767px){#vcb-bar.vcb-hide-text-mobile .vcb-bar-tx{display:none}#vcb-bar.vcb-hide-text-mobile .vcb-bar-item{padding:8px}}
 	</style>
+	<?php if ( ! $always ) : ?>
 	<script>
 		(function(){
 			var b=document.getElementById('vcb-bar'),t=document.getElementById('vcbBarToggle');
@@ -59,5 +68,6 @@ function vig_cb_render_bar( array $channels, array $style ): void {
 			});
 		})();
 	</script>
+	<?php endif; ?>
 	<?php
 }
