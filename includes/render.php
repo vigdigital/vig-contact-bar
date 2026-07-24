@@ -116,6 +116,7 @@ function vig_cb_inject_tawk(): void {
 	$hide        = get_option( 'vig_cb_tawkto_hide', '1' ) === '1';
 	$autoopen    = get_option( 'vig_cb_tawkto_autoopen', '0' ) === '1';
 	$chat_bottom = (int) get_option( 'vig_cb_tawkto_chat_bottom', '0' ); // >0 = hạ khung chat sát đáy (px)
+	$closebtn    = get_option( 'vig_cb_tawkto_closebtn', '0' ) === '1';   // nút × nhỏ để tắt popup
 	?>
 	<script type="text/javascript">
 		var Tawk_API = Tawk_API || {};
@@ -127,6 +128,46 @@ function vig_cb_inject_tawk(): void {
 			var HIDE = <?php echo $hide ? 'true' : 'false'; ?>;
 			var AUTOOPEN = <?php echo $autoopen ? 'true' : 'false'; ?>;
 			var CHAT_BOTTOM = <?php echo max( 0, $chat_bottom ); ?>;   // px cách đáy; 0 = không đụng
+			var CLOSEBTN = <?php echo $closebtn ? 'true' : 'false'; ?>;
+
+			// Tìm iframe khung chat MAXIMIZED (không phải bong bóng, không phải mobile fullscreen).
+			function bigChat(){
+				var vh = window.innerHeight, f = document.querySelectorAll('iframe');
+				for(var i=0;i<f.length;i++){
+					var r = f[i].getBoundingClientRect();
+					if(r.width>=260 && r.height>=300 && r.height < vh*0.92) return f[i];
+				}
+				return null;
+			}
+			// Nút × nhỏ để tắt popup (overlay ở góc trên-phải khung chat vì iframe cross-origin).
+			var _closeEl = null;
+			function closeBtn(){
+				if(_closeEl) return _closeEl;
+				var b = document.createElement('button');
+				b.type = 'button';
+				b.setAttribute('aria-label','Đóng');
+				b.innerHTML = '&times;';
+				b.style.cssText = 'position:fixed;z-index:2147483647;display:none;width:26px;height:26px;padding:0;'
+					+ 'border:none;border-radius:50%;cursor:pointer;background:#0f172a;color:#fff;'
+					+ 'font:700 18px/26px -apple-system,Segoe UI,Roboto,sans-serif;text-align:center;'
+					+ 'box-shadow:0 2px 8px rgba(0,0,0,.35)';
+				b.addEventListener('click', function(){
+					try { if(Tawk_API.minimize) Tawk_API.minimize(); } catch(e){}
+					b.style.display = 'none';
+				});
+				document.body.appendChild(b);
+				_closeEl = b;
+				return b;
+			}
+			function placeClose(){
+				if(!CLOSEBTN) return;
+				var big = bigChat(), b = closeBtn();
+				if(!big){ b.style.display = 'none'; return; }
+				var r = big.getBoundingClientRect();
+				b.style.left = Math.min(window.innerWidth-28, r.right-13) + 'px';
+				b.style.top  = Math.max(2, r.top-13) + 'px';
+				b.style.display = 'block';
+			}
 
 			function hideBubble(){
 				var f = document.querySelectorAll('iframe');
@@ -162,8 +203,8 @@ function vig_cb_inject_tawk(): void {
 				} catch(e){}
 				return true;
 			}
-			// Chạy cả 2 việc mỗi lần Tawk đổi DOM/style.
-			function tick(){ if(HIDE) hideBubble(); if(CHAT_BOTTOM) lowerChat(); }
+			// Chạy các việc mỗi lần Tawk đổi DOM/style.
+			function tick(){ if(HIDE) hideBubble(); if(CHAT_BOTTOM) lowerChat(); if(CLOSEBTN) placeClose(); }
 
 			Tawk_API.onLoad = function(){
 				if(wantAutoOpen()){
@@ -175,7 +216,7 @@ function vig_cb_inject_tawk(): void {
 			// gọi thêm vài nhịp phòng observer lỡ (animation mở khung).
 			Tawk_API.onChatMaximized = function(){ [0,150,400,800].forEach(function(ms){ setTimeout(tick, ms); }); };
 
-			if(HIDE || CHAT_BOTTOM){
+			if(HIDE || CHAT_BOTTOM || CLOSEBTN){
 				document.addEventListener('DOMContentLoaded', function(){
 					tick();
 					new MutationObserver(tick).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});

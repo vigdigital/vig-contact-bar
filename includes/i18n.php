@@ -56,6 +56,7 @@ function vcb_i18n_map(): array {
 		'Chuyển trang trong cùng phiên không bung lại; khách tự đóng thì thôi.' => 'It will not reopen while navigating in the same session, and stays closed once the visitor closes it.',
 		'Hạ khung chat sát đáy (px)' => 'Lower the chat window (px from bottom)',
 		'0 = giữ nguyên vị trí mặc định của Tawk.to. Ví dụ 24 = khung chat cách đáy màn hình 24px.' => '0 = keep Tawk.to\'s default position. E.g. 24 = the chat window sits 24px from the bottom of the screen.',
+		'Hiện nút × để khách tắt nhanh khung chat' => 'Show an × button so visitors can quickly close the chat',
 
 		// Tab Style
 		'Màu thương hiệu'      => 'Brand color',
