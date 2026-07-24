@@ -138,15 +138,18 @@ function vig_cb_inject_tawk(): void {
 				}
 			}
 			// Hạ khung chat MAXIMIZED xuống sát đáy. Tawk đặt vị trí bằng inline !important
-			// nên phải ép qua JS. Bỏ qua bong bóng nhỏ + bỏ qua mobile fullscreen (khỏi phá layout).
+			// nên phải ép qua JS, và Tawk hay GHI ĐÈ lại (nhất là lúc auto-open) → phải re-apply
+			// qua MutationObserver, không chỉ set 1-2 lần theo timer.
 			function lowerChat(){
 				if(!CHAT_BOTTOM) return;
-				var vh = window.innerHeight, f = document.querySelectorAll('iframe');
+				var vh = window.innerHeight, f = document.querySelectorAll('iframe'), want = CHAT_BOTTOM+'px';
 				for(var i=0;i<f.length;i++){
 					var r = f[i].getBoundingClientRect();
+					// khung chat lớn (không phải bong bóng), bỏ qua mobile fullscreen
 					if(r.width>=260 && r.height>=300 && r.height < vh*0.92){
-						f[i].style.setProperty('bottom', CHAT_BOTTOM+'px','important');
-						f[i].style.setProperty('top','auto','important');
+						if(f[i].style.bottom === want) continue;   // đã đúng → khỏi set (tránh vòng lặp observer)
+						f[i].style.setProperty('bottom', want, 'important');
+						f[i].style.setProperty('top', 'auto', 'important');
 					}
 				}
 			}
@@ -159,10 +162,8 @@ function vig_cb_inject_tawk(): void {
 				} catch(e){}
 				return true;
 			}
-			function afterMaximize(){
-				if(HIDE){ setTimeout(hideBubble,300); }
-				setTimeout(lowerChat,150); setTimeout(lowerChat,600);
-			}
+			// Chạy cả 2 việc mỗi lần Tawk đổi DOM/style.
+			function tick(){ if(HIDE) hideBubble(); if(CHAT_BOTTOM) lowerChat(); }
 
 			Tawk_API.onLoad = function(){
 				if(wantAutoOpen()){
@@ -171,15 +172,16 @@ function vig_cb_inject_tawk(): void {
 				}
 				if(HIDE){ if(Tawk_API.hideWidget) Tawk_API.hideWidget(); hideBubble(); }
 			};
-			Tawk_API.onChatMaximized = afterMaximize;
+			// gọi thêm vài nhịp phòng observer lỡ (animation mở khung).
+			Tawk_API.onChatMaximized = function(){ [0,150,400,800].forEach(function(ms){ setTimeout(tick, ms); }); };
 
-			if(HIDE){
+			if(HIDE || CHAT_BOTTOM){
 				document.addEventListener('DOMContentLoaded', function(){
-					hideBubble();
-					new MutationObserver(hideBubble).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
+					tick();
+					new MutationObserver(tick).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
 				});
+				window.addEventListener('resize', function(){ setTimeout(tick,200); });
 			}
-			if(CHAT_BOTTOM){ window.addEventListener('resize', function(){ setTimeout(lowerChat,200); }); }
 		})();
 	</script>
 	<style>.tawk-min-container{display:none!important;}</style>
