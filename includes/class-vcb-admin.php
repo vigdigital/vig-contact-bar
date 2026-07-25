@@ -27,6 +27,8 @@ class VCB_Admin {
 		update_option( 'vig_cb_preset', in_array( $p['vig_cb_preset'] ?? 'bar', array( 'bar', 'fab' ), true ) ? $p['vig_cb_preset'] : 'bar' );
 		update_option( 'vig_cb_fab_style', in_array( $p['vig_cb_fab_style'] ?? 'light', array( 'light', 'colored', 'bordered' ), true ) ? $p['vig_cb_fab_style'] : 'light' );
 		update_option( 'vig_cb_position', in_array( $p['vig_cb_position'] ?? 'br', array( 'br', 'bl', 'bc' ), true ) ? $p['vig_cb_position'] : 'br' );
+		update_option( 'vig_cb_offset_bottom', max( 0, min( 2000, (int) ( $p['vig_cb_offset_bottom'] ?? 24 ) ) ) );
+		update_option( 'vig_cb_offset_side', max( 0, min( 2000, (int) ( $p['vig_cb_offset_side'] ?? 24 ) ) ) );
 
 		// Style
 		update_option( 'vig_cb_color', sanitize_hex_color( $p['vig_cb_color'] ?? '' ) ?: '#2563eb' );
@@ -89,6 +91,12 @@ class VCB_Admin {
 							<label style="margin-right:16px;"><input type="radio" name="vig_cb_position" value="br" <?php checked( $position, 'br' ); ?>> <?php echo esc_html( vcb_t( 'Dưới phải' ) ); ?></label>
 							<label style="margin-right:16px;"><input type="radio" name="vig_cb_position" value="bl" <?php checked( $position, 'bl' ); ?>> <?php echo esc_html( vcb_t( 'Dưới trái' ) ); ?></label>
 							<label><input type="radio" name="vig_cb_position" value="bc" <?php checked( $position, 'bc' ); ?>> <?php echo esc_html( vcb_t( 'Dưới giữa' ) ); ?></label>
+						</td></tr>
+						<tr><th scope="row"><?php echo esc_html( vcb_t( 'Khoảng cách mép' ) ); ?></th><td>
+							<label><?php echo esc_html( vcb_t( 'Cạnh dưới' ) ); ?>: <input type="number" name="vig_cb_offset_bottom" value="<?php echo esc_attr( (int) get_option( 'vig_cb_offset_bottom', 24 ) ); ?>" min="0" max="2000" style="width:80px;"> px</label>
+							&nbsp;&nbsp;
+							<label><?php echo esc_html( vcb_t( 'Cạnh bên (phải/trái)' ) ); ?>: <input type="number" name="vig_cb_offset_side" value="<?php echo esc_attr( (int) get_option( 'vig_cb_offset_side', 24 ) ); ?>" min="0" max="2000" style="width:80px;"> px</label>
+							<p class="description"><?php echo esc_html( vcb_t( 'Tăng lên để né nút "cuộn lên đầu trang" hoặc widget khác. Mặc định 24. Cạnh bên không áp dụng khi chọn "Dưới giữa".' ) ); ?></p>
 						</td></tr>
 						<tr><th scope="row"><?php echo esc_html( vcb_t( 'Kiểu màu (FAB)' ) ); ?></th><td>
 							<label style="margin-right:16px;"><input type="radio" name="vig_cb_fab_style" value="light" <?php checked( $fab_style, 'light' ); ?>> <?php echo esc_html( vcb_t( 'Nền sáng, icon màu' ) ); ?></label>

@@ -35,13 +35,16 @@ function vig_cb_style(): array {
 
 /** CSS vị trí (offset cạnh) cho wrapper. */
 function vig_cb_position_css( string $pos ): string {
+	// Khoảng cách cạnh dưới + cạnh bên (px) — chỉnh được để né nút "scroll to top" v.v.
+	$b = max( 0, min( 2000, (int) get_option( 'vig_cb_offset_bottom', 24 ) ) );
+	$s = max( 0, min( 2000, (int) get_option( 'vig_cb_offset_side', 24 ) ) );
 	switch ( $pos ) {
 		case 'bl':
-			return 'bottom:24px;left:24px;right:auto;';
+			return "bottom:{$b}px;left:{$s}px;right:auto;";
 		case 'bc':
-			return 'bottom:0;left:50%;right:auto;transform:translateX(-50%);';
+			return "bottom:{$b}px;left:50%;right:auto;transform:translateX(-50%);";
 		default:
-			return 'bottom:24px;right:24px;left:auto;';
+			return "bottom:{$b}px;right:{$s}px;left:auto;";
 	}
 }
 
