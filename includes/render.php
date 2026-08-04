@@ -137,19 +137,28 @@ function vig_cb_inject_tawk(): void {
 
 			function isMobile(){ return window.matchMedia ? window.matchMedia('(max-width:767px)').matches : window.innerWidth <= 767; }
 
-			// Ẩn launcher Tawk (bong bóng/pill "Chat") TRÊN MOBILE. Iframe launcher hay là about:blank
-			// (không lọc được theo src) → nhận theo hình học: nhỏ, nằm sát 1 góc dưới. Bỏ qua khung chat
-			// đang mở (cao ≥ 300). Đánh dấu data-vcbmh để khi xoay sang desktop thì bỏ ẩn lại.
+			// Ẩn launcher Tawk (bong bóng/pill "Chat") TRÊN MOBILE.
+			// Nhận theo CHỮ KÝ INLINE STYLE (có ngay lúc Tawk chèn iframe, kể cả khi about:blank 0×0 →
+			// ẩn TỨC THÌ, không bị flash 2s như cách đo kích thước hiển thị):
+			// launcher = position:fixed + max-height nhỏ (≤90px). Loại đúng khung chat (max-height:545px)
+			// và overlay fullscreen (max-height:100%). Đánh dấu data-vcbmh để xoay sang desktop thì bỏ ẩn.
+			function isLauncher(s){
+				s = s || '';
+				if(s.indexOf('position:fixed') === -1 && s.indexOf('position: fixed') === -1) return false;
+				var m = s.match(/max-height:\s*(\d+)px/);
+				return !!m && parseInt(m[1],10) <= 90;
+			}
 			function hideMobileLauncher(){
 				if(!HIDE_MOBILE) return;
-				var mobile = isMobile(), vw = window.innerWidth, vh = window.innerHeight, f = document.querySelectorAll('iframe');
+				var mobile = isMobile(), f = document.querySelectorAll('iframe');
 				for(var i=0;i<f.length;i++){
-					var el = f[i], r = el.getBoundingClientRect();
-					var launcher = r.height>=20 && r.height<=160 && r.width>=40 && r.width<=300
-						&& (vh - r.bottom) < 160 && Math.min(r.left, vw - r.right) < 160;
-					if(!launcher) continue;
-					if(mobile){ el.style.setProperty('display','none','important'); el.setAttribute('data-vcbmh','1'); }
-					else if(el.getAttribute('data-vcbmh')){ el.style.removeProperty('display'); el.removeAttribute('data-vcbmh'); }
+					var el = f[i];
+					if(!isLauncher(el.getAttribute('style'))) continue;
+					if(mobile){
+						if(el.style.display !== 'none'){ el.style.setProperty('display','none','important'); el.setAttribute('data-vcbmh','1'); }
+					} else if(el.getAttribute('data-vcbmh')){
+						el.style.removeProperty('display'); el.removeAttribute('data-vcbmh');
+					}
 				}
 			}
 
