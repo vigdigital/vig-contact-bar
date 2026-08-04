@@ -61,6 +61,8 @@ function vcb_i18n_map(): array {
 		'Hạ khung chat sát đáy (px)' => 'Lower the chat window (px from bottom)',
 		'0 = giữ nguyên vị trí mặc định của Tawk.to. Ví dụ 24 = khung chat cách đáy màn hình 24px.' => '0 = keep Tawk.to\'s default position. E.g. 24 = the chat window sits 24px from the bottom of the screen.',
 		'Hiện nút × để khách tắt nhanh khung chat' => 'Show an × button so visitors can quickly close the chat',
+		'Ẩn nút "Chat" của Tawk.to trên mobile' => 'Hide the Tawk.to "Chat" launcher on mobile',
+		'Khách mobile vẫn mở chat được qua nút Tawk.to trong thanh liên hệ.' => 'Mobile visitors can still open chat via the Tawk.to button in the contact bar.',
 
 		// Tab Style
 		'Màu thương hiệu'      => 'Brand color',

@@ -120,6 +120,7 @@ function vig_cb_inject_tawk(): void {
 	$autoopen    = get_option( 'vig_cb_tawkto_autoopen', '0' ) === '1';
 	$chat_bottom = (int) get_option( 'vig_cb_tawkto_chat_bottom', '0' ); // >0 = hạ khung chat sát đáy (px)
 	$closebtn    = get_option( 'vig_cb_tawkto_closebtn', '0' ) === '1';   // nút × nhỏ để tắt popup
+	$hide_mobile = get_option( 'vig_cb_tawkto_hide_mobile', '0' ) === '1'; // ẩn launcher Tawk trên mobile
 	?>
 	<script type="text/javascript">
 		var Tawk_API = Tawk_API || {};
@@ -132,6 +133,25 @@ function vig_cb_inject_tawk(): void {
 			var AUTOOPEN = <?php echo $autoopen ? 'true' : 'false'; ?>;
 			var CHAT_BOTTOM = <?php echo max( 0, $chat_bottom ); ?>;   // px cách đáy; 0 = không đụng
 			var CLOSEBTN = <?php echo $closebtn ? 'true' : 'false'; ?>;
+			var HIDE_MOBILE = <?php echo $hide_mobile ? 'true' : 'false'; ?>;
+
+			function isMobile(){ return window.matchMedia ? window.matchMedia('(max-width:767px)').matches : window.innerWidth <= 767; }
+
+			// Ẩn launcher Tawk (bong bóng/pill "Chat") TRÊN MOBILE. Iframe launcher hay là about:blank
+			// (không lọc được theo src) → nhận theo hình học: nhỏ, nằm sát 1 góc dưới. Bỏ qua khung chat
+			// đang mở (cao ≥ 300). Đánh dấu data-vcbmh để khi xoay sang desktop thì bỏ ẩn lại.
+			function hideMobileLauncher(){
+				if(!HIDE_MOBILE) return;
+				var mobile = isMobile(), vw = window.innerWidth, vh = window.innerHeight, f = document.querySelectorAll('iframe');
+				for(var i=0;i<f.length;i++){
+					var el = f[i], r = el.getBoundingClientRect();
+					var launcher = r.height>=20 && r.height<=160 && r.width>=40 && r.width<=300
+						&& (vh - r.bottom) < 160 && Math.min(r.left, vw - r.right) < 160;
+					if(!launcher) continue;
+					if(mobile){ el.style.setProperty('display','none','important'); el.setAttribute('data-vcbmh','1'); }
+					else if(el.getAttribute('data-vcbmh')){ el.style.removeProperty('display'); el.removeAttribute('data-vcbmh'); }
+				}
+			}
 
 			// Tìm iframe khung chat MAXIMIZED (không phải bong bóng, không phải mobile fullscreen).
 			function bigChat(){
@@ -207,7 +227,7 @@ function vig_cb_inject_tawk(): void {
 				return true;
 			}
 			// Chạy các việc mỗi lần Tawk đổi DOM/style.
-			function tick(){ if(HIDE) hideBubble(); if(CHAT_BOTTOM) lowerChat(); if(CLOSEBTN) placeClose(); }
+			function tick(){ if(HIDE) hideBubble(); if(CHAT_BOTTOM) lowerChat(); if(CLOSEBTN) placeClose(); if(HIDE_MOBILE) hideMobileLauncher(); }
 
 			Tawk_API.onLoad = function(){
 				if(wantAutoOpen()){
@@ -219,7 +239,7 @@ function vig_cb_inject_tawk(): void {
 			// gọi thêm vài nhịp phòng observer lỡ (animation mở khung).
 			Tawk_API.onChatMaximized = function(){ [0,150,400,800].forEach(function(ms){ setTimeout(tick, ms); }); };
 
-			if(HIDE || CHAT_BOTTOM || CLOSEBTN){
+			if(HIDE || CHAT_BOTTOM || CLOSEBTN || HIDE_MOBILE){
 				document.addEventListener('DOMContentLoaded', function(){
 					tick();
 					new MutationObserver(tick).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
@@ -229,6 +249,9 @@ function vig_cb_inject_tawk(): void {
 		})();
 	</script>
 	<style>.tawk-min-container{display:none!important;}</style>
+	<?php if ( $hide_mobile ) : ?>
+	<style>@media (max-width:767px){ .tawk-min-container,.tawk-button,.tawk-flex,[id^="tawk"] iframe[title*="chat" i]{ display:none!important; } }</style>
+	<?php endif; ?>
 	<?php
 	echo $code; // phpcs:ignore WordPress.Security.EscapeOutput -- mã nhúng do admin nhập
 }

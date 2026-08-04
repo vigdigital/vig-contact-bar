@@ -39,6 +39,7 @@ class VCB_Admin {
 		update_option( 'vig_cb_tawkto_autoopen', isset( $p['vig_cb_tawkto_autoopen'] ) ? '1' : '0' );
 		update_option( 'vig_cb_tawkto_chat_bottom', max( 0, min( 2000, (int) ( $p['vig_cb_tawkto_chat_bottom'] ?? 0 ) ) ) );
 		update_option( 'vig_cb_tawkto_closebtn', isset( $p['vig_cb_tawkto_closebtn'] ) ? '1' : '0' );
+		update_option( 'vig_cb_tawkto_hide_mobile', isset( $p['vig_cb_tawkto_hide_mobile'] ) ? '1' : '0' );
 		update_option( 'vig_cb_always_open', isset( $p['vig_cb_always_open'] ) ? '1' : '0' );
 
 		// Content — mỗi kênh
@@ -144,6 +145,8 @@ class VCB_Admin {
 										<p style="margin:4px 0 0;"><label><?php echo esc_html( vcb_t( 'Hạ khung chat sát đáy (px)' ) ); ?>: <input type="number" name="vig_cb_tawkto_chat_bottom" value="<?php echo esc_attr( (int) get_option( 'vig_cb_tawkto_chat_bottom', '0' ) ); ?>" min="0" max="2000" style="width:80px;"></label>
 										<span class="description"><?php echo esc_html( vcb_t( '0 = giữ nguyên vị trí mặc định của Tawk.to. Ví dụ 24 = khung chat cách đáy màn hình 24px.' ) ); ?></span></p>
 										<p style="margin:4px 0 0;"><label><input type="checkbox" name="vig_cb_tawkto_closebtn" value="1" <?php checked( get_option( 'vig_cb_tawkto_closebtn', '0' ), '1' ); ?>> <?php echo esc_html( vcb_t( 'Hiện nút × để khách tắt nhanh khung chat' ) ); ?></label></p>
+										<p style="margin:4px 0 0;"><label><input type="checkbox" name="vig_cb_tawkto_hide_mobile" value="1" <?php checked( get_option( 'vig_cb_tawkto_hide_mobile', '0' ), '1' ); ?>> <?php echo esc_html( vcb_t( 'Ẩn nút "Chat" của Tawk.to trên mobile' ) ); ?></label>
+										<span class="description"><?php echo esc_html( vcb_t( 'Khách mobile vẫn mở chat được qua nút Tawk.to trong thanh liên hệ.' ) ); ?></span></p>
 									<?php endif; ?>
 								</td>
 								<td><input type="text" name="vig_cb_<?php echo esc_attr( $k ); ?>_label" value="<?php echo esc_attr( $label ); ?>" placeholder="<?php echo esc_attr( VCB_Channels::default_label( $k, $def ) ); ?>" style="width:100%;"></td>
