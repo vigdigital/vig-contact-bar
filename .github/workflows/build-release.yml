@@ -30,6 +30,7 @@ jobs:
             --exclude='build' \
             --exclude='README.md' \
             ./ "build/$SLUG/"
+          find "build/$SLUG" \( -name $'Icon\r' -o -name '.DS_Store' -o -name '._*' \) -print -delete
           ( cd build && zip -rq "$SLUG.zip" "$SLUG" )
           echo "ASSET=build/$SLUG.zip" >> "$GITHUB_ENV"
           echo "Built: build/$SLUG.zip"
