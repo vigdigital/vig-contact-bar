@@ -49,7 +49,7 @@ function vig_cb_render_p3( array $channels, array $style ): void {
 		#vcb-p3.vcb-collapsed .vcb-p3-list{opacity:0;transform:translateY(16px);pointer-events:none}
 		#vcb-p3 .vcb-p3-url{display:flex;align-items:center;text-decoration:none}
 		#vcb-p3.vcb-p3-right .vcb-p3-url{flex-direction:row-reverse}
-		#vcb-p3 .vcb-p3-icon{flex:0 0 auto;width:52px;height:52px;border-radius:50%;border:3px solid #fff;color:#fff;
+		#vcb-p3 .vcb-p3-icon{flex:0 0 auto;width:52px;height:52px;border-radius:50%;border:1px solid #fff;color:#fff;
 			display:flex;align-items:center;justify-content:center;background:var(--vcb-ch,#333);box-shadow:0 6px 18px rgba(15,23,42,.22)}
 		#vcb-p3 .vcb-p3-icon svg{width:28px;height:28px;fill:currentColor}
 		#vcb-p3 .vcb-p3-label{margin:0 12px;padding:5px 12px;border-radius:10px;background:#fff;color:#374151;font-size:13px;
