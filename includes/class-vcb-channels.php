@@ -23,7 +23,7 @@ class VCB_Channels {
 	/** @return array<string,array> registry định nghĩa từng kênh. */
 	public static function registry(): array {
 		return array(
-			'tawkto'    => array( 'label' => 'Chat trực tuyến', 'label_en' => 'Live chat', 'color' => '#1553a9', 'behavior' => 'tawk',    'value_type' => 'code', 'hint' => 'Dán mã nhúng Tawk.to',                              'hint_en' => 'Paste your Tawk.to embed code' ),
+			'tawkto'    => array( 'label' => 'Tawk.to', 'label_en' => 'Tawk.to', 'color' => '#1553a9', 'behavior' => 'tawk',    'value_type' => 'code', 'hint' => 'Dán mã nhúng Tawk.to',                              'hint_en' => 'Paste your Tawk.to embed code' ),
 			'phone'     => array( 'label' => 'Gọi điện',        'label_en' => 'Call',      'color' => '#22C55E', 'behavior' => 'link',    'value_type' => 'text', 'hint' => 'Số điện thoại',                                     'hint_en' => 'Phone number' ),
 			'whatsapp'  => array( 'label' => 'WhatsApp',        'label_en' => 'WhatsApp',  'color' => '#25D366', 'behavior' => 'link',    'value_type' => 'text', 'hint' => 'Số quốc tế, vd 84901234567',                        'hint_en' => 'International number, e.g. 84901234567' ),
 			'zalo'      => array( 'label' => 'Zalo',            'label_en' => 'Zalo',      'color' => '#0068FF', 'behavior' => 'link',    'value_type' => 'text', 'hint' => 'Số điện thoại hoặc link zalo.me',                   'hint_en' => 'Phone number or zalo.me link' ),
