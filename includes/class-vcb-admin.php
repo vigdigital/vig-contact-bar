@@ -24,8 +24,9 @@ class VCB_Admin {
 		$p = wp_unslash( $_POST );
 
 		// Preset
-		update_option( 'vig_cb_preset', in_array( $p['vig_cb_preset'] ?? 'bar', array( 'bar', 'fab' ), true ) ? $p['vig_cb_preset'] : 'bar' );
+		update_option( 'vig_cb_preset', in_array( $p['vig_cb_preset'] ?? 'bar', array( 'bar', 'fab', 'p3' ), true ) ? $p['vig_cb_preset'] : 'bar' );
 		update_option( 'vig_cb_fab_style', in_array( $p['vig_cb_fab_style'] ?? 'light', array( 'light', 'colored', 'bordered' ), true ) ? $p['vig_cb_fab_style'] : 'light' );
+		update_option( 'vig_cb_p3_ring', in_array( $p['vig_cb_p3_ring'] ?? 'soft', array( 'strong', 'soft', 'off' ), true ) ? $p['vig_cb_p3_ring'] : 'soft' );
 		update_option( 'vig_cb_position', in_array( $p['vig_cb_position'] ?? 'br', array( 'br', 'bl', 'bc' ), true ) ? $p['vig_cb_position'] : 'br' );
 		update_option( 'vig_cb_offset_bottom', max( 0, min( 2000, (int) ( $p['vig_cb_offset_bottom'] ?? 24 ) ) ) );
 		update_option( 'vig_cb_offset_side', max( 0, min( 2000, (int) ( $p['vig_cb_offset_side'] ?? 24 ) ) ) );
@@ -65,6 +66,7 @@ class VCB_Admin {
 
 		$preset    = get_option( 'vig_cb_preset', 'bar' );
 		$fab_style = get_option( 'vig_cb_fab_style', 'light' );
+		$p3_ring   = get_option( 'vig_cb_p3_ring', 'soft' );
 		$position  = get_option( 'vig_cb_position', 'br' );
 		$color     = get_option( 'vig_cb_color', '#2563eb' );
 		?>
@@ -86,7 +88,7 @@ class VCB_Admin {
 							<?php foreach ( vig_cb_presets() as $key => $pdef ) : ?>
 								<label style="margin-right:18px;"><input type="radio" name="vig_cb_preset" value="<?php echo esc_attr( $key ); ?>" <?php checked( $preset, $key ); ?>> <?php echo esc_html( $pdef['label'] ); ?></label>
 							<?php endforeach; ?>
-							<p class="description"><?php echo esc_html( vcb_t( 'Bar = thanh pill dọc có nhãn. FAB = nút tròn nổi bung ra các kênh.' ) ); ?></p>
+							<p class="description"><?php echo esc_html( vcb_t( 'Bar = thanh pill dọc có nhãn. FAB = nút tròn nổi bung ra các kênh. Preset 3 = nút tròn viền trắng, rung "chuông", toggle điện thoại/X (kiểu Dream Wedding).' ) ); ?></p>
 						</td></tr>
 						<tr><th scope="row"><?php echo esc_html( vcb_t( 'Vị trí' ) ); ?></th><td>
 							<label style="margin-right:16px;"><input type="radio" name="vig_cb_position" value="br" <?php checked( $position, 'br' ); ?>> <?php echo esc_html( vcb_t( 'Dưới phải' ) ); ?></label>
@@ -104,6 +106,12 @@ class VCB_Admin {
 							<label style="margin-right:16px;"><input type="radio" name="vig_cb_fab_style" value="colored" <?php checked( $fab_style, 'colored' ); ?>> <?php echo esc_html( vcb_t( 'Nền màu, icon trắng' ) ); ?></label>
 							<label><input type="radio" name="vig_cb_fab_style" value="bordered" <?php checked( $fab_style, 'bordered' ); ?>> <?php echo esc_html( vcb_t( 'Viền màu' ) ); ?></label>
 							<p class="description"><?php echo esc_html( vcb_t( 'Chỉ áp dụng cho preset FAB.' ) ); ?></p>
+						</td></tr>
+						<tr><th scope="row"><?php echo esc_html( vcb_t( 'Độ rung (Preset 3)' ) ); ?></th><td>
+							<label style="margin-right:16px;"><input type="radio" name="vig_cb_p3_ring" value="strong" <?php checked( $p3_ring, 'strong' ); ?>> <?php echo esc_html( vcb_t( 'Mạnh' ) ); ?></label>
+							<label style="margin-right:16px;"><input type="radio" name="vig_cb_p3_ring" value="soft" <?php checked( $p3_ring, 'soft' ); ?>> <?php echo esc_html( vcb_t( 'Nhẹ' ) ); ?></label>
+							<label><input type="radio" name="vig_cb_p3_ring" value="off" <?php checked( $p3_ring, 'off' ); ?>> <?php echo esc_html( vcb_t( 'Tắt' ) ); ?></label>
+							<p class="description"><?php echo esc_html( vcb_t( 'Hiệu ứng rung "chuông" của các nút. Chỉ áp dụng cho Preset 3. Nút thu gọn khi đóng dùng Màu thương hiệu (tab Style).' ) ); ?></p>
 						</td></tr>
 						<tr><th scope="row"><?php echo esc_html( vcb_t( 'Hiện sẵn tất cả nút' ) ); ?></th><td>
 							<label><input type="checkbox" name="vig_cb_always_open" value="1" <?php checked( get_option( 'vig_cb_always_open', '0' ), '1' ); ?>> <?php echo wp_kses_post( vcb_t( 'Bung sẵn, <strong>ẩn nút "Liên hệ"</strong> (khách thấy ngay các kênh, không cần bấm)' ) ); ?></label>

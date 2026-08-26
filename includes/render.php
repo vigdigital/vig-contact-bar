@@ -18,6 +18,7 @@ function vig_cb_presets(): array {
 	return array(
 		'bar' => array( 'label' => 'Thanh (Bar)',   'render' => 'vig_cb_render_bar' ),
 		'fab' => array( 'label' => 'Nút nổi (FAB)',  'render' => 'vig_cb_render_fab' ),
+		'p3'  => array( 'label' => 'Preset 3',       'render' => 'vig_cb_render_p3' ),
 	);
 }
 
