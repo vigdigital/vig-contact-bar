@@ -42,7 +42,7 @@ class VCB_Channels {
 	 * Nhãn MẶC ĐỊNH của kênh theo ngôn ngữ site (Anh → label_en, còn lại → label tiếng Việt).
 	 * Dùng khi admin KHÔNG tự nhập nhãn riêng.
 	 */
-	public static function default_label( string $key, array $def = null ): string {
+	public static function default_label( string $key, ?array $def = null ): string {
 		if ( null === $def ) {
 			$reg = self::registry();
 			$def = $reg[ $key ] ?? array();
@@ -56,7 +56,7 @@ class VCB_Channels {
 	}
 
 	/** Gợi ý (hint) của kênh theo ngôn ngữ admin. */
-	public static function default_hint( string $key, array $def = null ): string {
+	public static function default_hint( string $key, ?array $def = null ): string {
 		if ( null === $def ) {
 			$reg = self::registry();
 			$def = $reg[ $key ] ?? array();
